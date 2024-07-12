@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SChat - Simple Chat App</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .chat-container {
+    width: 400px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .chat-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .chat-messages {
+    padding: 10px;
+    overflow-y: auto;
+    height: 300px;
+  }
+
+  .chat-input {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f7f7f7;
+  }
+
+  .chat-input input[type="text"] {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-right: 10px;
+  }
+
+  .chat-input button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+</style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <h2>SChat - Simple Chat App</h2>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <!-- Messages will be added here dynamically -->
+    </div>
+    <div class="chat-input">
+      <input type="text" id="message-input" placeholder="Type your message...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    // Load messages from localStorage on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadMessages();
+    });
+
+    // Function to send a message
+    function sendMessage() {
+      var messageInput = document.getElementById('message-input');
+      var message = messageInput.value.trim();
+      if (message !== '') {
+        displayMessage('You', message);
+        saveMessage('You', message); // Save message to localStorage
+        messageInput.value = '';
+      }
+    }
+
+    // Function to display a message in the chat area
+    function displayMessage(sender, message) {
+      var chatMessages = document.getElementById('chat-messages');
+      var messageDiv = document.createElement('div');
+      messageDiv.classList.add('message');
+      messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+      chatMessages.appendChild(messageDiv);
+      // Optional: Scroll to bottom
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Function to save a message to localStorage
+    function saveMessage(sender, message) {
+      var messages = JSON.parse(localStorage.getItem('messages')) || [];
+      messages.push({ sender: sender, message: message });
+      localStorage.setItem('messages', JSON.stringify(messages));
+    }
+
+    // Function to load messages from localStorage
+    function loadMessages() {
+      var messages = JSON.parse(localStorage.getItem('messages')) || [];
+      messages.forEach(function(msg) {
+        displayMessage(msg.sender, msg.message);
+      });
+    }
+  </script>
+</body>
+</html>
