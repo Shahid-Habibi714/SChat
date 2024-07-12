@@ -78,6 +78,10 @@
   </div>
 
   <script>
+    // Initialize user IDs
+    var currentUser = 'UserA'; // Replace with user's actual ID
+    var otherUser = 'UserB';   // Replace with other user's actual ID
+
     // Load messages from localStorage on page load
     document.addEventListener('DOMContentLoaded', function() {
       loadMessages();
@@ -88,8 +92,8 @@
       var messageInput = document.getElementById('message-input');
       var message = messageInput.value.trim();
       if (message !== '') {
-        displayMessage('You', message);
-        saveMessage('You', message); // Save message to localStorage
+        displayMessage(currentUser, message);
+        saveMessage(currentUser, message); // Save message to localStorage
         messageInput.value = '';
       }
     }
@@ -107,15 +111,19 @@
 
     // Function to save a message to localStorage
     function saveMessage(sender, message) {
-      var messages = JSON.parse(localStorage.getItem('messages')) || [];
-      messages.push({ sender: sender, message: message });
+      var messages = JSON.parse(localStorage.getItem('messages')) || {};
+      if (!messages[otherUser]) {
+        messages[otherUser] = [];
+      }
+      messages[otherUser].push({ sender: sender, message: message });
       localStorage.setItem('messages', JSON.stringify(messages));
     }
 
     // Function to load messages from localStorage
     function loadMessages() {
-      var messages = JSON.parse(localStorage.getItem('messages')) || [];
-      messages.forEach(function(msg) {
+      var messages = JSON.parse(localStorage.getItem('messages')) || {};
+      var messagesForOtherUser = messages[otherUser] || [];
+      messagesForOtherUser.forEach(function(msg) {
         displayMessage(msg.sender, msg.message);
       });
     }
